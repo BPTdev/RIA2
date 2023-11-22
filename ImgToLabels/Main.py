@@ -1,31 +1,17 @@
 import sys
-import Image
-import RekognitionClient
+from RekognitionClient import RekognitionClient 
+
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python image_converter.py <image_path>")
-        print("Example: python image_converter.py house.webp")
-        return
+    default_image_path = "images/big.png"  
+    user_input = input(f"Enter the image path (leave blank for default '{default_image_path}'): ").strip()
 
-    image_path = sys.argv[1]
-    image = Image(image_path)
 
-    # Load the image
-    image_bytes = image.load_image()
+    image_path = user_input if user_input else default_image_path
 
-    if image_bytes is not None:
-        # Convert the image to base64
-        base64_image = image.convert_image_to_base64(image_bytes)
-        if base64_image is not None:
-            print("Base64 representation of the image:")
-            print(base64_image)
-        else:
-            print("Error: Unable to convert the image to base64.")
-    
-    client = RekognitionClient(access_key, secret_key, region)
-    labels = client.detect_labels('image.png')
-    for label in labels:
-        print(label)
+    # Create a Rekognition client instance
+    client = RekognitionClient('keys.json')
+    response = client.detect_labels(image_path)
+    print(response)
 
 if __name__ == "__main__":
     main()

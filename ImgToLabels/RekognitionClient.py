@@ -28,12 +28,5 @@ class RekognitionClient:
         )
 
         # Return the detected labels
-        return [label['Name'] for label in response['Labels']]
+        return response
 
-# Usage
-if __name__ == "__main__":
-    credentials_file = 'keys.json'
-    client = RekognitionClient(credentials_file)
-    labels = client.detect_labels('images/big.png')
-    for label in labels:
-        print(label)
