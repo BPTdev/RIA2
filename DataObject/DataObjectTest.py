@@ -14,7 +14,7 @@ class DataObjectTests(unittest.TestCase):
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     region_name = os.getenv('AWS_REGION')
 
-    local_file = "image2.png"
+    local_file = "3.png"
     destination_folder = "/tmp"
     bucket = "python.aws.cld.education"
     bucket_uri = bucket + "/" + local_file
@@ -135,6 +135,8 @@ class DataObjectTests(unittest.TestCase):
         # The bucket contains objects at the root level as well as in subfolders
         # Sample: mybucket.com/myobject     # myObject is a folder
         #         mybucket.com/myobject/myObjectInSubfolder
+        print(self.data_object.doseExist(self.object_uri))
+        print(self.data_object.doseExist(self.object_uri_with_subfolder))
         self.assertTrue(self.data_object.doseExist(self.object_uri))
         self.assertTrue(self.data_object.doseExist(self.object_uri_with_subfolder))
 

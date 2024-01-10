@@ -32,7 +32,6 @@ class AwsDataObjectImpl(IDataObject):
             return True
         except boto3.exceptions.botocore.exceptions.ClientError as e:
             if e.response["Error"]["Code"] == "404":
-                print("Object does not exist")
                 return False
             else:
                 raise
@@ -58,7 +57,6 @@ class AwsDataObjectImpl(IDataObject):
             Params={"Bucket": bucket_name, "Key": object_name},
             ExpiresIn=expiration_time * 60,
         )
-        print(response)
         return response
 
     def remove(self, remote_file_path: str, recursive: bool = False) -> None:
