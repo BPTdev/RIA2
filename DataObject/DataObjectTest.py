@@ -14,12 +14,12 @@ class DataObjectTests(unittest.TestCase):
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     region_name = os.getenv('AWS_REGION')
 
-    local_file = "3.png"
-    destination_folder = "/tmp"
+    local_file = "4.png"
+    destination_folder = "/tmp/"
     bucket = "python.aws.cld.education"
     bucket_uri = bucket + "/" + local_file
     object_uri = bucket_uri
-    object_uri_with_subfolder = bucket_uri+destination_folder
+    object_uri_with_subfolder = bucket+destination_folder+local_file
 
     def setUp(self):
         # Initialisation de votre data object (à remplacer par la logique réelle)
@@ -33,7 +33,7 @@ class DataObjectTests(unittest.TestCase):
         # When
 
         # Then
-        self.assertFalse(self.data_object.doseExist(self.bucket_uri))
+        self.assertTrue(self.data_object.doseExist(self.bucket_uri))
 
     def test_does_exist_existing_object_object_exists(self):
         # Given
@@ -135,8 +135,8 @@ class DataObjectTests(unittest.TestCase):
         # The bucket contains objects at the root level as well as in subfolders
         # Sample: mybucket.com/myobject     # myObject is a folder
         #         mybucket.com/myobject/myObjectInSubfolder
-        print(self.data_object.doseExist(self.object_uri))
-        print(self.data_object.doseExist(self.object_uri_with_subfolder))
+        print(self.object_uri_with_subfolder)
+        print(self.object_uri)
         self.assertTrue(self.data_object.doseExist(self.object_uri))
         self.assertTrue(self.data_object.doseExist(self.object_uri_with_subfolder))
 
@@ -144,7 +144,7 @@ class DataObjectTests(unittest.TestCase):
         self.data_object.remove(self.bucket_uri, True)
 
         # Then
-        self.assertTrue(self.data_object.doseExist(self.object_uri))
+        self.assertFalse(self.data_object.doseExist(self.object_uri))
 
 if __name__ == '__main__':
     unittest.main()

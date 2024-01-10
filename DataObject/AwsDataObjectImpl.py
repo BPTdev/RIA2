@@ -24,17 +24,27 @@ class AwsDataObjectImpl(IDataObject):
 
     def doseExist(self, remoteFilePath: str) -> bool:
         if "/" not in remoteFilePath:
-            raise ValueError("Invalid remote file path format. Expected format: 'bucket_name/object_name'")
-        
-        bucket_name, object_name = remoteFilePath.split("/", 1)
-        try:
-            self.s3.head_object(Bucket=bucket_name, Key=object_name)
-            return True
-        except boto3.exceptions.botocore.exceptions.ClientError as e:
-            if e.response["Error"]["Code"] == "404":
-                return False
-            else:
-                raise
+            # If no '/' is present, assume it's a bucket name and check its existence
+            try:
+                self.s3.head_bucket(Bucket=remoteFilePath)
+                return True
+            except boto3.exceptions.botocore.exceptions.ClientError as e:
+                if e.response["Error"]["Code"] == "404":
+                    return False
+                else:
+                    raise
+        else:
+            # If '/' is present, split into bucket name and object name
+            bucket_name, object_name = remoteFilePath.split("/", 1)
+            try:
+                self.s3.head_object(Bucket=bucket_name, Key=object_name)
+                return True
+            except boto3.exceptions.botocore.exceptions.ClientError as e:
+                if e.response["Error"]["Code"] == "404":
+                    return False
+                else:
+                    raise
+
 
     def upload(self, file_path: str, remote_file_path: str) -> None:
         if "/" not in remote_file_path:
