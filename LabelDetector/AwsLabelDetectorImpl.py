@@ -1,5 +1,5 @@
 import sys
-from ImgToBucketToLabels.Interfaces.ILabelDetector import ILabelDetector
+from ILabelDetector import ILabelDetector
 from RekognitionClient import RekognitionClient
 
 
@@ -8,7 +8,7 @@ class AwsLabelDetectorImpl(ILabelDetector):
         self.client = RekognitionClient("keys.json")
 
     @staticmethod
-    def analyze(remoteFullPath: str, maxLabels: int = 10, minConfidenceLevel: float = 90) -> str:
+    def analyze(remoteFullPath: str, maxLabels: int = 5, minConfidenceLevel: float = 90) -> str:
         # Create a Rekognition client instance
         client = RekognitionClient("keys.json")
 
@@ -17,6 +17,5 @@ class AwsLabelDetectorImpl(ILabelDetector):
         client.set_max_labels(maxLabels)
 
         response = client.detect_labels(remoteFullPath)
-        print(remoteFullPath)
         return response
 

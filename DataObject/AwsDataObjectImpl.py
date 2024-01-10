@@ -58,6 +58,7 @@ class AwsDataObjectImpl(IDataObject):
             Params={"Bucket": bucket_name, "Key": object_name},
             ExpiresIn=expiration_time * 60,
         )
+        print(response)
         return response
 
     def remove(self, remote_file_path: str, recursive: bool = False) -> None:

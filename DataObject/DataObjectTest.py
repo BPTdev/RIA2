@@ -14,7 +14,7 @@ class DataObjectTests(unittest.TestCase):
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     region_name = os.getenv('AWS_REGION')
 
-    local_file = "image.png"
+    local_file = "image2.png"
     destination_folder = "/tmp"
     bucket = "python.aws.cld.education"
     bucket_uri = bucket + "/" + local_file
