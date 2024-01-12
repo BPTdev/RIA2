@@ -1,5 +1,39 @@
-from AwsLabelDetectorImpl import AwsLabelDetectorImpl
-from AwsObjectDataImpl import AwsObjectDataImpl
+from datetime import datetime
+from DataObject.AwsDataObjectImpl import AwsDataObjectImpl
+from LabelDetector.AwsLabelDetectorImpl import AwsLabelDetectorImpl
 
-awsLabel = AwsObjectDataImpl()
+awsData = AwsDataObjectImpl()
+awsLabel = AwsLabelDetectorImpl()
 
+
+bucket = 'python.cloud.aws.edu'
+imagePath = '1.png'
+
+
+#online image
+image = 'https://i.imgur.com/iERTcTq.jpeg'
+imagePath = 'iERTcTq.jpeg'
+imagePath = '1.png'
+remoteFullPath = bucket+'/'+imagePath
+
+awsData.apiCall(bucket, imagePath, remoteFullPath)
+
+tempUri=awsData.publish(remoteFullPath)
+
+response = awsLabel.analyze(tempUri)
+
+
+
+current_date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+sql_file_name = f"sql/{imagePath}_{current_date}.sql"
+
+# Open a file for writing the SQL statements
+with open(sql_file_name, 'w') as sql_file:
+    for label in response['Labels']:
+        name = label['Name']
+        confidence = label['Confidence']
+        insert_statement = f"INSERT INTO your_table (name, confidence) VALUES ('{name}', {confidence});\n"
+        sql_file.write(insert_statement)
+print(response)
+awsData.upload(sql_file_name, remoteFullPath)
+# upload a sql file to the bucket that contain labels data

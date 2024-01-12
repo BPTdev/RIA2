@@ -1,5 +1,7 @@
+import os
 import boto3
 import json
+from dotenv import load_dotenv
 import requests
 from io import BytesIO
 
@@ -56,16 +58,15 @@ import json
 
 
 class RekognitionClient:
-    def __init__(self, credentials_file):
-        # Load credentials from JSON file
-        with open(credentials_file, "r") as file:
-            credentials = json.load(file)
+    def __init__(self):
+        # Load environment variables from .env file
+        load_dotenv()
 
         # Set up AWS session and create a Rekognition client
         self.session = boto3.Session(
-            aws_access_key_id=credentials["aws_access_key_id"],
-            aws_secret_access_key=credentials["aws_secret_access_key"],
-            region_name=credentials["region_name"],
+            aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+            region_name=os.getenv("AWS_REGION"),
         )
         self.rekognition = self.session.client("rekognition")
 
@@ -105,7 +106,6 @@ class RekognitionClient:
     def detect_labels(self, image_source, simplified=True):
         print(f"Current Parameters: Max Labels: {self.max_labels}, Min Confidence: {self.min_confidence}, Features: {self.features}, Settings: {self.settings}")
 
-        # If the image source is a URL, download the image content
         if image_source.lower().startswith("http://") or image_source.lower().startswith("https://"):
             response = requests.get(image_source)
             if response.status_code == 200:
@@ -113,7 +113,6 @@ class RekognitionClient:
             else:
                 raise Exception(f"Failed to download image from URL: {image_source}")
         else:
-            # Load image from a local file
             with open(image_source, "rb") as image_file:
                 image_bytes = BytesIO(image_file.read())
 
@@ -122,7 +121,6 @@ class RekognitionClient:
         else:
             features = ["GENERAL_LABELS", "IMAGE_PROPERTIES"]
 
-        # Call Amazon Rekognition to detect labels in the image
         response = self.rekognition.detect_labels(
             Image={"Bytes": image_bytes.getvalue()},
             MaxLabels=self.max_labels,
@@ -131,5 +129,4 @@ class RekognitionClient:
             Settings=self.settings,
         )
 
-        # Return the detected labels
         return response

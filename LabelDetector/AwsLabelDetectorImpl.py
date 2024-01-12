@@ -1,16 +1,15 @@
-import sys
-from ILabelDetector import ILabelDetector
-from RekognitionClient import RekognitionClient
+from .ILabelDetector import ILabelDetector
+from .RekognitionClient import RekognitionClient
 
 
 class AwsLabelDetectorImpl(ILabelDetector):
     def __init__(self):
-        self.client = RekognitionClient("keys.json")
+        self.client = RekognitionClient()
 
     @staticmethod
     def analyze(remoteFullPath: str, maxLabels: int = 5, minConfidenceLevel: float = 90) -> str:
         # Create a Rekognition client instance
-        client = RekognitionClient("keys.json")
+        client = RekognitionClient()
 
         # Set parameters using methods
         client.set_min_confidence(minConfidenceLevel)

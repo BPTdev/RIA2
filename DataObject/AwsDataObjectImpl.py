@@ -1,7 +1,11 @@
+
 import os
 from dotenv import load_dotenv
-from IDataObject import IDataObject
+from .IDataObject import IDataObject
 import boto3
+import mimetypes
+import magic
+import requests
 
 
 class AwsDataObjectImpl(IDataObject):
@@ -80,6 +84,42 @@ class AwsDataObjectImpl(IDataObject):
         else:
             self.s3.delete_object(Bucket=bucket_name, Key=object_name)
 
+    def apiCall(self, bucket, image_path, remoteFullPath):
+        file_name_with_extension = None
+        if image_path.lower().startswith("http://") or image_path.lower().startswith("https://"):
+            response = requests.get(image_path)
+            if response.status_code == 200:
+                file_type = magic.from_buffer(response.content, mime=True)
+                extension = mimetypes.guess_extension(file_type)
+
+                if not extension:
+                    raise ValueError("Could not determine the file extension")
+
+                file_name_with_extension = 'temp_image' + extension
+
+                with open(file_name_with_extension, 'wb') as file:
+                    file.write(response.content)
+                image_path = file_name_with_extension
+            else:
+                raise Exception(f"Failed to download image from URL: {image_path}")
+
+        
+        if not self.doseExist(bucket):
+            pass  
+
+        if not self.doseExist(remoteFullPath):
+            self.download(remoteFullPath, image_path)
+            self.upload(image_path, remoteFullPath)
+        else:
+            self.upload(image_path, remoteFullPath)
+
+        if file_name_with_extension and os.path.exists(file_name_with_extension):
+            os.remove(file_name_with_extension)
+
+
+
+
+
 
 class AwsDataObjectImplException(Exception):
     pass
@@ -99,9 +139,6 @@ class NotEmptyObjectException(AwsDataObjectImplException):
         self.message = message
         super().__init__(self.message)
 
-try:
-    # Code that may raise the ObjectNotFoundException
-    raise ObjectNotFoundException("This is a custom ObjectNotFoundException")
-except ObjectNotFoundException as e:
-    print(f"Caught ObjectNotFoundException: {e}")
+
+
 

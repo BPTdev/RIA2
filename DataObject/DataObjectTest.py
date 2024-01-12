@@ -17,7 +17,8 @@ class DataObjectTests(unittest.TestCase):
     local_file = "4.png"
     destination_folder = "/tmp/"
     bucket = "python.aws.cld.education"
-    bucket_uri = bucket + "/" + local_file
+    bucket_urid = bucket + "/" + local_file
+    bucket_uri = bucket
     object_uri = bucket_uri
     object_uri_with_subfolder = bucket+destination_folder+local_file
 
@@ -135,8 +136,7 @@ class DataObjectTests(unittest.TestCase):
         # The bucket contains objects at the root level as well as in subfolders
         # Sample: mybucket.com/myobject     # myObject is a folder
         #         mybucket.com/myobject/myObjectInSubfolder
-        print(self.object_uri_with_subfolder)
-        print(self.object_uri)
+        
         self.assertTrue(self.data_object.doseExist(self.object_uri))
         self.assertTrue(self.data_object.doseExist(self.object_uri_with_subfolder))
 
