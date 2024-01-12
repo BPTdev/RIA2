@@ -100,21 +100,30 @@ class AwsDataObjectImpl(IDataObject):
                 with open(file_name_with_extension, 'wb') as file:
                     file.write(response.content)
                 image_path = file_name_with_extension
+
+                remoteFullPath = bucket+'/'+file_name_with_extension
+                print(remoteFullPath)
             else:
                 raise Exception(f"Failed to download image from URL: {image_path}")
 
         
         if not self.doseExist(bucket):
             pass  
-
         if not self.doseExist(remoteFullPath):
-            self.download(remoteFullPath, image_path)
             self.upload(image_path, remoteFullPath)
+            self.download(remoteFullPath, image_path)
         else:
             self.upload(image_path, remoteFullPath)
 
         if file_name_with_extension and os.path.exists(file_name_with_extension):
             os.remove(file_name_with_extension)
+        
+        if file_name_with_extension:
+            return bucket+'/'+file_name_with_extension
+        else:
+            return remoteFullPath
+
+        
 
 
 

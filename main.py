@@ -11,13 +11,15 @@ imagePath = '1.png'
 
 
 #online image
-image = 'https://i.imgur.com/iERTcTq.jpeg'
-imagePath = 'iERTcTq.jpeg'
-imagePath = '1.png'
+imageOnline = 'https://i.imgur.com/iERTcTq.jpeg'
+imagePath = '2.png'
+#Uncomment the line below to use an img from the web with the link above
+#imagePath = imageOnline
+
 remoteFullPath = bucket+'/'+imagePath
 
-awsData.apiCall(bucket, imagePath, remoteFullPath)
-
+remoteFullPath = awsData.apiCall(bucket, imagePath, remoteFullPath)
+print(remoteFullPath)
 tempUri=awsData.publish(remoteFullPath)
 
 response = awsLabel.analyze(tempUri)
@@ -25,7 +27,7 @@ response = awsLabel.analyze(tempUri)
 
 
 current_date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-sql_file_name = f"sql/{imagePath}_{current_date}.sql"
+sql_file_name = f"sql/{remoteFullPath.split('/')[-1]}_{current_date}.sql"
 
 # Open a file for writing the SQL statements
 with open(sql_file_name, 'w') as sql_file:
