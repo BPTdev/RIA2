@@ -58,6 +58,8 @@ class AwsDataObjectImpl(IDataObject):
         if "/" not in remote_file_path:
             raise ValueError("Invalid remote file path format. Expected format: 'bucket_name/object_name'")
         bucket_name, object_name = remote_file_path.split("/", 1)
+        if not self.does_exist(remote_file_path):
+            raise ObjectNotFoundException()
         self.s3.download_file(bucket_name, object_name, local_file_path)
 
     def publish(self, remote_file_path: str, expiration_time: int = 90) -> str:
@@ -107,7 +109,6 @@ class AwsDataObjectImpl(IDataObject):
             pass
         if not self.does_exist(remote_full_path):
             self.upload(image_path, remote_full_path)
-            self.download(remote_full_path, image_path)
         else:
             self.upload(image_path, remote_full_path)
 

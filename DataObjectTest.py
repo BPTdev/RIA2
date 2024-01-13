@@ -2,6 +2,7 @@ import os
 import unittest
 
 from dotenv import load_dotenv
+import requests
 from DataObject.AwsDataObjectImpl import AwsDataObjectImpl, ObjectNotFoundException
 
 
@@ -14,7 +15,7 @@ class DataObjectTests(unittest.TestCase):
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     region_name = os.getenv('AWS_REGION')
 
-    local_file = "2.png"
+    local_file = "1.png"
     destination_folder = "/tmp/"
     bucket_uri = "python.cloud.aws.edu"
 
@@ -31,9 +32,8 @@ class DataObjectTests(unittest.TestCase):
         self.data_object.remove(self.object_uri, True)
 
         # Remove the downloaded file
-        if os.path.exists(self.local_file):
-            os.remove(self.local_file)
-
+        if os.path.exists("downloaded_file.png"):
+            os.remove("downloaded_file.png")
 
     # Test cases for DoesExist
     def test_does_exist_existing_bucket_bucket_exists(self):
@@ -43,7 +43,7 @@ class DataObjectTests(unittest.TestCase):
         # When
 
         # Then
-        self.assertTrue(self.data_object.does_exist(self.object_uri))
+        self.assertTrue(self.data_object.does_exist(self.bucket_uri))
 
     def test_does_exist_existing_object_object_exists(self):
         # Given
@@ -85,26 +85,24 @@ class DataObjectTests(unittest.TestCase):
     # Test cases for Download
     def test_download_object_and_local_path_available_object_downloaded(self):
         # Given
-        download_file = 'downloaded_file.png'
         self.data_object.upload(self.local_file, self.object_uri)
         self.assertTrue(self.data_object.does_exist(self.object_uri))
-        self.assertFalse(os.path.exists(download_file))
+        self.assertFalse(os.path.exists("downloaded_file.png"))
 
         # When
-        self.data_object.download(self.object_uri, download_file)
+        self.data_object.download(self.object_uri, "downloaded_file.png")
 
         # Then
         self.assertTrue(os.path.exists(self.local_file))
 
-
     def test_download_object_missing_throw_exception(self):
         # Given
-        self.assertFalse(self.data_object.does_exist(self.object_uri))
-        self.assertFalse(os.path.exists(self.local_file))
+        self.assertFalse(self.data_object.does_exist(self.bucket_uri+'/'+'missing_object.png'))
+        self.assertFalse(os.path.exists("downloaded_file.png"))
 
         # When
         with self.assertRaises(ObjectNotFoundException):
-            self.data_object.download(self.object_uri)
+            self.data_object.download(self.object_uri, "downloaded_file.png")
 
         # Then
         # Exception thrown
@@ -118,6 +116,13 @@ class DataObjectTests(unittest.TestCase):
         # When
         presigned_url = self.data_object.publish(self.object_uri)
         # TODO: Download file using wget or another method that does not need our project library
+
+        response = requests.get(presigned_url)
+
+        if response.status_code == 200:
+            with open(self.local_file, 'wb') as local_file:
+                local_file.write(response.content)
+
 
         # Then
         self.assertTrue(os.path.exists(self.local_file))
