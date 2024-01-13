@@ -1,18 +1,20 @@
+import os
 import boto3
-import json
+from dotenv import load_dotenv
+import requests
+from io import BytesIO
 
 
 class RekognitionClient:
-    def __init__(self, credentials_file):
-        # Load credentials from JSON file
-        with open(credentials_file, "r") as file:
-            credentials = json.load(file)
+    def __init__(self):
+        # Load environment variables from .env file
+        load_dotenv()
 
         # Set up AWS session and create a Rekognition client
         self.session = boto3.Session(
-            aws_access_key_id=credentials["aws_access_key_id"],
-            aws_secret_access_key=credentials["aws_secret_access_key"],
-            region_name=credentials["region_name"],
+            aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+            region_name=os.getenv("AWS_REGION"),
         )
         self.rekognition = self.session.client("rekognition")
 
@@ -40,36 +42,37 @@ class RekognitionClient:
 
     def add_label_exclusion(self, label):
         self.settings["GeneralLabels"]["LabelExclusionFilters"].append(label)
-    
+
     def add_label_category_inclusion(self, label):
         self.settings["GeneralLabels"]["LabelCategoryInclusionFilters"].append(label)
-    
+
     def add_label_category_exclusion(self, label):
         self.settings["GeneralLabels"]["LabelCategoryExclusionFilters"].append(label)
 
     # You can add similar methods for category inclusion and exclusion
 
-    def detect_labels(self, image_path, simplified=True):
-        # Print current parameters
-        print(f"Current Parameters: Max Labels: {self.max_labels}, Min Confidence: {self.min_confidence}, Features: {self.features}, Settings: {self.settings}")
-
-        # Open the image file
-        with open(image_path, "rb") as image_file:
-            image_bytes = image_file.read()
+    def detect_labels(self, image_source, simplified=True):
+        if image_source.lower().startswith("http://") or image_source.lower().startswith("https://"):
+            response = requests.get(image_source)
+            if response.status_code == 200:
+                image_bytes = BytesIO(response.content)
+            else:
+                raise Exception(f"Failed to download image from URL: {image_source}")
+        else:
+            with open(image_source, "rb") as image_file:
+                image_bytes = BytesIO(image_file.read())
 
         if simplified:
             features = ["GENERAL_LABELS"]
         else:
             features = ["GENERAL_LABELS", "IMAGE_PROPERTIES"]
 
-        # Call Amazon Rekognition to detect labels in the image
         response = self.rekognition.detect_labels(
-            Image={"Bytes": image_bytes},
+            Image={"Bytes": image_bytes.getvalue()},
             MaxLabels=self.max_labels,
             MinConfidence=self.min_confidence,
             Features=features,
             Settings=self.settings,
         )
 
-        # Return the detected labels
         return response
