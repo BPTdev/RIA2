@@ -7,14 +7,13 @@ class AwsLabelDetectorImpl(ILabelDetector):
         self.client = RekognitionClient()
 
     @staticmethod
-    def analyze(remoteFullPath: str, maxLabels: int = 5, minConfidenceLevel: float = 90) -> str:
+    def analyze(remote_full_path: str, max_labels: int = 5, min_confidence_level: float = 90) -> str:
         # Create a Rekognition client instance
         client = RekognitionClient()
 
         # Set parameters using methods
-        client.set_min_confidence(minConfidenceLevel)
-        client.set_max_labels(maxLabels)
+        client.set_min_confidence(min_confidence_level)
+        client.set_max_labels(max_labels)
 
-        response = client.detect_labels(remoteFullPath)
+        response = client.detect_labels(remote_full_path)
         return response
-

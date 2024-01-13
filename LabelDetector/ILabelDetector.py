@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
+
 class ILabelDetector(ABC):
     @abstractmethod
-    def analyze(self, remoteFilePath : str, maxLabels : int = 10, minConfidenceLevel : float = 90) -> str:
+    def analyze(self, remote_full_path: str, max_labels: int = 10, min_confidence_level: float = 90) -> str:
         pass

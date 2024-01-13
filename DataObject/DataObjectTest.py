@@ -2,7 +2,7 @@ import os
 import unittest
 
 from dotenv import load_dotenv
-from AwsDataObjectImpl import AwsDataObjectImpl, ObjectNotFoundException
+from .AwsDataObjectImpl import AwsDataObjectImpl, ObjectNotFoundException
 
 
 class DataObjectTests(unittest.TestCase):
@@ -34,7 +34,7 @@ class DataObjectTests(unittest.TestCase):
         # When
 
         # Then
-        self.assertTrue(self.data_object.doseExist(self.bucket_uri))
+        self.assertTrue(self.data_object.does_exist(self.bucket_uri))
 
     def test_does_exist_existing_object_object_exists(self):
         # Given
@@ -45,7 +45,7 @@ class DataObjectTests(unittest.TestCase):
         # Check the assertion
 
         # Then
-        self.assertTrue(self.data_object.doseExist(self.object_uri))
+        self.assertTrue(self.data_object.does_exist(self.object_uri))
 
     def test_does_exist_missing_object_object_not_exists(self):
         # Given
@@ -56,26 +56,26 @@ class DataObjectTests(unittest.TestCase):
         # Check the assertion
 
         # Then
-        self.assertFalse(self.data_object.doseExist(self.object_uri))
+        self.assertFalse(self.data_object.does_exist(self.object_uri))
 
     # Test case for Upload
     def test_upload_bucket_and_local_file_are_available_new_object_created_on_bucket(self):
         # Given
-        self.assertTrue(self.data_object.doseExist(self.bucket_uri))
-        self.assertFalse(self.data_object.doseExist(self.object_uri))
+        self.assertTrue(self.data_object.does_exist(self.bucket_uri))
+        self.assertFalse(self.data_object.does_exist(self.object_uri))
 
         # When
         self.data_object.upload(self.object_uri, self.local_file)
 
         # Then
-        self.assertTrue(self.data_object.doseExist(self.object_uri))
+        self.assertTrue(self.data_object.does_exist(self.object_uri))
 
     # It is the client's responsibility to verify (precondition) that the local file is accessible before attempting to upload.
 
     # Test cases for Download
     def test_download_object_and_local_path_available_object_downloaded(self):
         # Given
-        self.assertTrue(self.data_object.doseExist(self.object_uri))
+        self.assertTrue(self.data_object.does_exist(self.object_uri))
         self.assertFalse(os.path.exists(self.local_file))
 
         # When
@@ -86,7 +86,7 @@ class DataObjectTests(unittest.TestCase):
 
     def test_download_object_missing_throw_exception(self):
         # Given
-        self.assertFalse(self.data_object.doseExist(self.object_uri))
+        self.assertFalse(self.data_object.does_exist(self.object_uri))
         self.assertFalse(os.path.exists(self.local_file))
 
         # When
@@ -99,7 +99,7 @@ class DataObjectTests(unittest.TestCase):
     # Test cases for Publish
     def test_publish_object_exists_public_url_created(self):
         # Given
-        self.assertTrue(self.data_object.doseExist(self.object_uri))
+        self.assertTrue(self.data_object.does_exist(self.object_uri))
         self.assertTrue(os.path.exists(self.destination_folder))
 
         # When
@@ -111,7 +111,7 @@ class DataObjectTests(unittest.TestCase):
 
     def test_publish_object_missing_throw_exception(self):
         # Given
-        self.assertFalse(self.data_object.doseExist(self.object_uri))
+        self.assertFalse(self.data_object.does_exist(self.object_uri))
 
         # When
         with self.assertRaises(ObjectNotFoundException):
@@ -123,13 +123,13 @@ class DataObjectTests(unittest.TestCase):
     # Test cases for Remove
     def test_remove_object_present_no_folder_object_removed(self):
         # Given
-        self.assertTrue(self.data_object.doseExist(self.object_uri))
+        self.assertTrue(self.data_object.does_exist(self.object_uri))
 
         # When
         self.data_object.remove(self.bucket_uri)
 
         # Then
-        self.assertFalse(self.data_object.doseExist(self.bucket_uri))
+        self.assertFalse(self.data_object.does_exist(self.bucket_uri))
 
     def test_remove_object_and_folder_present_object_removed(self):
         # Given
@@ -137,14 +137,14 @@ class DataObjectTests(unittest.TestCase):
         # Sample: mybucket.com/myobject     # myObject is a folder
         #         mybucket.com/myobject/myObjectInSubfolder
         
-        self.assertTrue(self.data_object.doseExist(self.object_uri))
-        self.assertTrue(self.data_object.doseExist(self.object_uri_with_subfolder))
+        self.assertTrue(self.data_object.does_exist(self.object_uri))
+        self.assertTrue(self.data_object.does_exist(self.object_uri_with_subfolder))
 
         # When
         self.data_object.remove(self.bucket_uri, True)
 
         # Then
-        self.assertFalse(self.data_object.doseExist(self.object_uri))
+        self.assertFalse(self.data_object.does_exist(self.object_uri))
 
 if __name__ == '__main__':
     unittest.main()
