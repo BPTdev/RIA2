@@ -17,24 +17,33 @@ List all dependencies and their version needed by the project as :
 
 ### Configuration
 
-Sensitive data like aws creds, are stored in a .env file
+Sensitive data like aws credentials, are stored in a .env file
+
+## Deployment
+
+### On dev environment
+
+To get the dependencies you must install them with pip3
+To run the tests, open a terminal at root of repo and write `python3 DataObjectTest.py` or `python3 LabelDetectorTest.py`
+
+### On integration environment
+
 
 ## Directory structure
 
 ```shell
+├── 1.png
+├── 2.png
 ├── DataObject
-│   ├── 4.png
 │   ├── AwsDataObjectImpl.py
-│   ├── DataObjectTest.py
 │   ├── IDataObject.py
-│   ├── __pycache__
-│   │   ├── AwsDataObjectImpl.cpython-311.pyc
-│   │   └── IDataObject.cpython-311.pyc
-│   └── image.png
+│   └── __pycache__
+│       ├── AwsDataObjectImpl.cpython-311.pyc
+│       └── IDataObject.cpython-311.pyc
+├── DataObjectTest.py
 ├── LabelDetector
 │   ├── AwsLabelDetectorImpl.py
 │   ├── ILabelDetector.py
-│   ├── LabelDetectorTest.py
 │   ├── RekognitionClient.py
 │   ├── __pycache__
 │   │   ├── AwsLabelDetectorImpl.cpython-311.pyc
@@ -42,9 +51,10 @@ Sensitive data like aws creds, are stored in a .env file
 │   │   └── RekognitionClient.cpython-311.pyc
 │   ├── image.png
 │   └── keys.json
-├── keys.json
-├── keys.json.example
-└── main.py
+├── LabelDetectorTest.py
+├── main.py
+├── sql
+└── tmp
 ```
 
 ## Collaborate
