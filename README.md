@@ -14,6 +14,7 @@ List all dependencies and their version needed by the project as :
 
 * Language : Python 3.11.6
 * Package : boto3, dotenv, unittest
+* AWS : IAM access configured with a bucket s3
 
 ### Configuration
 
@@ -23,8 +24,9 @@ Sensitive data like aws credentials, are stored in a .env file
 
 ### On dev environment
 
-To get the dependencies you must install them with pip3
-To run the tests, open a terminal at root of repo and write `python3 DataObjectTest.py` or `python3 LabelDetectorTest.py`
+To get the dependencies you must install them with pip3.  
+To run the tests, open a terminal at root of repo and write `python3 DataObjectTest.py` or `python3 LabelDetectorTest.py`.  
+To run the sequence open a terminal at root of repo and write `python3 main.py`
 
 ### On integration environment
 
