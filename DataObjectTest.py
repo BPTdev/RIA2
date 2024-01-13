@@ -14,17 +14,26 @@ class DataObjectTests(unittest.TestCase):
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     region_name = os.getenv('AWS_REGION')
 
-    local_file = "4.png"
+    local_file = "2.png"
     destination_folder = "/tmp/"
-    bucket = "python.cloud.aws.edu"
+    bucket_uri = "python.cloud.aws.edu"
 
-    bucket_uri = bucket
-    object_uri = bucket_uri
-    object_uri_with_subfolder = bucket+destination_folder+local_file
+    object_uri = bucket_uri+"/"+local_file
+
+    object_uri_with_subfolder = bucket_uri+destination_folder+local_file
 
     def setUp(self):
         # Initialisation de votre data object (à remplacer par la logique réelle)
         self.data_object = AwsDataObjectImpl()
+
+    def tearDown(self):
+        # Nettoyage de votre data object (à remplacer par la logique réelle)
+        self.data_object.remove(self.object_uri, True)
+
+        # Remove the downloaded file
+        if os.path.exists(self.local_file):
+            os.remove(self.local_file)
+
 
     # Test cases for DoesExist
     def test_does_exist_existing_bucket_bucket_exists(self):
@@ -34,7 +43,7 @@ class DataObjectTests(unittest.TestCase):
         # When
 
         # Then
-        self.assertTrue(self.data_object.does_exist(self.bucket_uri))
+        self.assertTrue(self.data_object.does_exist(self.object_uri))
 
     def test_does_exist_existing_object_object_exists(self):
         # Given
@@ -45,12 +54,13 @@ class DataObjectTests(unittest.TestCase):
         # Check the assertion
 
         # Then
-        self.assertTrue(self.data_object.does_exist(self.object_uri))
+        self.assertTrue(self.data_object.does_exist(self.bucket_uri))
 
     def test_does_exist_missing_object_object_not_exists(self):
         # Given
         # The bucket is always available
         # The bucket is empty (or does not contain the expected object)
+        self.data_object.remove(self.object_uri)
 
         # When
         # Check the assertion
@@ -65,7 +75,7 @@ class DataObjectTests(unittest.TestCase):
         self.assertFalse(self.data_object.does_exist(self.object_uri))
 
         # When
-        self.data_object.upload(self.object_uri, self.local_file)
+        self.data_object.upload(self.local_file, self.object_uri)
 
         # Then
         self.assertTrue(self.data_object.does_exist(self.object_uri))
@@ -75,14 +85,17 @@ class DataObjectTests(unittest.TestCase):
     # Test cases for Download
     def test_download_object_and_local_path_available_object_downloaded(self):
         # Given
+        download_file = 'downloaded_file.png'
+        self.data_object.upload(self.local_file, self.object_uri)
         self.assertTrue(self.data_object.does_exist(self.object_uri))
-        self.assertFalse(os.path.exists(self.local_file))
+        self.assertFalse(os.path.exists(download_file))
 
         # When
-        self.data_object.download_object(self.object_uri, self.local_file)
+        self.data_object.download(self.object_uri, download_file)
 
         # Then
         self.assertTrue(os.path.exists(self.local_file))
+
 
     def test_download_object_missing_throw_exception(self):
         # Given
@@ -103,7 +116,7 @@ class DataObjectTests(unittest.TestCase):
         self.assertTrue(os.path.exists(self.destination_folder))
 
         # When
-        presigned_url = self.data_object.publish(self.bucket_uri)
+        presigned_url = self.data_object.publish(self.object_uri)
         # TODO: Download file using wget or another method that does not need our project library
 
         # Then
@@ -126,7 +139,7 @@ class DataObjectTests(unittest.TestCase):
         self.assertTrue(self.data_object.does_exist(self.object_uri))
 
         # When
-        self.data_object.remove(self.bucket_uri)
+        self.data_object.remove(self.object_uri)
 
         # Then
         self.assertFalse(self.data_object.does_exist(self.bucket_uri))
@@ -141,7 +154,7 @@ class DataObjectTests(unittest.TestCase):
         self.assertTrue(self.data_object.does_exist(self.object_uri_with_subfolder))
 
         # When
-        self.data_object.remove(self.bucket_uri, True)
+        self.data_object.remove(self.object_uri, True)
 
         # Then
         self.assertFalse(self.data_object.does_exist(self.object_uri))
