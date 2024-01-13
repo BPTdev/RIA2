@@ -2,7 +2,7 @@ import os
 import unittest
 
 from dotenv import load_dotenv
-from .AwsDataObjectImpl import AwsDataObjectImpl, ObjectNotFoundException
+from DataObject.AwsDataObjectImpl import AwsDataObjectImpl, ObjectNotFoundException
 
 
 class DataObjectTests(unittest.TestCase):
@@ -16,8 +16,8 @@ class DataObjectTests(unittest.TestCase):
 
     local_file = "4.png"
     destination_folder = "/tmp/"
-    bucket = "python.aws.cld.education"
-    bucket_urid = bucket + "/" + local_file
+    bucket = "python.cloud.aws.edu"
+
     bucket_uri = bucket
     object_uri = bucket_uri
     object_uri_with_subfolder = bucket+destination_folder+local_file

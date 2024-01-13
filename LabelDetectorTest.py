@@ -1,13 +1,13 @@
 import unittest
-import os  
-from AwsLabelDetectorImpl import AwsLabelDetectorImpl
+import os
+from LabelDetector.AwsLabelDetectorImpl import AwsLabelDetectorImpl
 
 
 class TestLabelDetector(unittest.TestCase):
     def setUp(self):
         # Définissez vos variables ici
-        self.localFile = "image.png"
-        self.remoteFileUrl = "https://www.admin.ch/gov/de/start/departemente/departement-fuer-auswaertige-angelegenheiten-eda/_jcr_content/par/image/image.imagespooler.jpg/1611330706364/Cassis.jpg"
+        self.localFile = "2.png"
+        self.remote_full_url = "https://www.admin.ch/gov/de/start/departemente/departement-fuer-auswaertige-angelegenheiten-eda/_jcr_content/par/image/image.imagespooler.jpg/1611330706364/Cassis.jpg"
         self.label_detector = AwsLabelDetectorImpl()  # Remplacez par votre classe réelle
         return super().setUp()
 
@@ -29,7 +29,7 @@ class TestLabelDetector(unittest.TestCase):
         # TODO: Testez si le fichier distant est disponible
 
         # When
-        response = self.label_detector.analyze(self.remoteFileUrl)
+        response = self.label_detector.analyze(self.remote_full_url)
         # TODO: Le type de réponse contient la charge utile (retournée en JSON par l'API)
 
         # Then
@@ -40,46 +40,46 @@ class TestLabelDetector(unittest.TestCase):
     def test_analyze_remote_image_with_custom_max_label_value_image_analyzed(self):
         # Given
         # TODO: Testez si le fichier distant est disponible
-        maxLabels = 5
+        max_labels = 5
 
         # When
-        response = self.label_detector.analyze(self.remoteFileUrl, maxLabels)
+        response = self.label_detector.analyze(self.remote_full_url, max_labels)
         # TODO: Le type de réponse contient la charge utile (retournée en JSON par l'API)
 
         # Then
-        self.assertTrue(len(response['Labels']) <= maxLabels)
+        self.assertTrue(len(response['Labels']) <= max_labels)
         for metric in response['Labels']:
             self.assertTrue(metric['Confidence'] >= 90)
 
     def test_analyze_remote_image_with_custom_min_confidence_level_value_image_analyzed(self):
         # Given
         # TODO: Testez si le fichier distant est disponible
-        minConfidenceLevel = 60
+        min_confidence_level = 60
 
         # When
-        response = self.label_detector.analyze(self.remoteFileUrl,minConfidenceLevel= minConfidenceLevel)
+        response = self.label_detector.analyze(self.remote_full_url, min_confidence_level= min_confidence_level)
         # TODO: Le type de réponse contient la charge utile (retournée en JSON par l'API)
         
         # Then
         
         self.assertTrue(len(response['Labels']) <= 10)
         for metric in response['Labels']:
-            self.assertTrue(metric['Confidence'] >= minConfidenceLevel)
+            self.assertTrue(metric['Confidence'] >= min_confidence_level)
 
     def test_analyze_remote_image_with_custom_values_image_analyzed(self):
         # Given
         # TODO: Testez si le fichier distant est disponible
-        maxLabels = 5
-        minConfidenceLevel = 60
+        max_labels = 5
+        min_confidence_level = 60
 
         # When
-        response = self.label_detector.analyze(self.remoteFileUrl, maxLabels, minConfidenceLevel)
+        response = self.label_detector.analyze(self.remote_full_url, max_labels, min_confidence_level)
         # TODO: Le type de réponse contient la charge utile (retournée en JSON par l'API)
 
         # Then
-        self.assertTrue(len(response['Labels']) <= maxLabels)
+        self.assertTrue(len(response['Labels']) <= max_labels)
         for metric in response['Labels']:
-            self.assertTrue(metric['Confidence'] >= minConfidenceLevel)
+            self.assertTrue(metric['Confidence'] >= min_confidence_level)
 
 if __name__ == '__main__':
     unittest.main()
