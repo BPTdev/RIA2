@@ -1,48 +1,51 @@
+import React, {useEffect, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
-    
-export default function Image() {
-    const {
-        acceptedFiles,
-        fileRejections,
-        getRootProps,
-        getInputProps
-    } = useDropzone({    
-        maxFiles:1,
-        accept: 'image/*'
+
+export default function Image(props) {
+    const [files, setFiles] = useState([]);
+    const {getRootProps, getInputProps} = useDropzone({
+    accept: {
+        'image/*': []
+    },
+    onDrop: acceptedFiles => {
+        setFiles(acceptedFiles.map(file => Object.assign(file, {
+        preview: URL.createObjectURL(file)
+        })));
+    }
     });
     
-    const acceptedFileItems = acceptedFiles.map(file => (
-        <li key={file.path}>
-        {file.path} - {file.size} bytes
-        </li>
+    const thumbs = files.map(file => (
+    <div className='w-full mt-4' key={file.name}>
+        <div>
+        <img
+            alt='preview'
+            className='w-full'
+            src={file.preview}
+            // Revoke data uri after image is loaded
+            onLoad={() => { URL.revokeObjectURL(file.preview) }}
+        />
+        </div>
+    </div>
     ));
-    
-    const fileRejectionItems = fileRejections.map(({ file, errors  }) => { 
-    return (
-        <li key={file.path}>
-            {file.path} - {file.size} bytes
-            <ul>
-                {errors.map(e => <li key={e.code}>{e.message}</li>)}
-            </ul>
-    
-        </li>
-    ) 
-    });
-    
-    
+
+    useEffect(() => {
+    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+    return () => files.forEach(file => URL.revokeObjectURL(file.preview));
+    }, []);
+
     return (
         <div>
             <div className='w-full flex justify-center'>
-                <section className="w-[75%] flex-initial p-4 bg-slate-100 text-slate-400 rounded-lg border my-10">
-                    <div {...getRootProps({ className: 'dropzone' })}>
-                        <input {...getInputProps()} />
-                        <p>Drag 'n' drop some files here, or click to select files</p>
-                        <em>Only 1 image</em>
-                    </div>
-                    
-                    
-                </section>
-                
+                    <section className="w-[75%] flex-initial p-4 bg-slate-100 text-slate-400 rounded-lg border my-10">
+                        <div {...getRootProps({ className: 'dropzone' })}>
+                            <input {...getInputProps()} />
+                            <p>Drag 'n' drop an image here, or click to select files</p>
+                            
+                            <aside>
+                                {thumbs}
+                            </aside>
+                        </div>
+                    </section>
             </div>
             <div className='mb-10 w-full flex justify-center'>
                 <div className='flex w-[75%] '>
@@ -57,8 +60,7 @@ export default function Image() {
                         </form>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
     );
-    }
-
+}
