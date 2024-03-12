@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next';
+
 export default function Image() {
+    const { t } = useTranslation();
+
     return (
         <div className="w-full  flex justify-center mt-10">
             <div className="text-left p-3 w-[75%]">
-                <h1 className="mb-4">Labels</h1>
+                <h1 className="mb-4">{t('labels')}</h1>
                 <div className="flex">
                     <div className="flex-1">
                         <p>Cat</p>

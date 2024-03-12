@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
+import { useTranslation } from 'react-i18next';
+
 
 export default function Image(props) {
+    const { t } = useTranslation();
     const [files, setFiles] = useState([]);
     const {getRootProps, getInputProps} = useDropzone({
     accept: {
@@ -39,7 +42,7 @@ export default function Image(props) {
                     <section className="w-[75%] flex-initial p-4 bg-slate-100 text-slate-400 rounded-lg border my-10">
                         <div {...getRootProps({ className: 'dropzone' })}>
                             <input {...getInputProps()} />
-                            <p>Drag 'n' drop an image here, or click to select files</p>
+                            <p>{t('dragndroptext')}</p>
                             
                             <aside>
                                 {thumbs}
@@ -51,11 +54,11 @@ export default function Image(props) {
                 <div className='flex w-[75%] '>
                     <div>
                     <form className='text-left'>
-                            <label htmlFor="numberInput">Max labels:</label>
+                            <label htmlFor="numberInput">{t('max_labels')}</label>
                             <input className='ml-8 w-24 bg-slate-100' placeholder='Number' min={1} value={5} type="number" id="numberInput" />
                             <br></br>
                             <br></br>
-                            <label className='' htmlFor="numberInput">Min confidence:</label>
+                            <label className='' htmlFor="numberInput">{t('min_confidence')}</label>
                             <input className='ml-8 w-24 bg-slate-100' placeholder='Number' max={100} min={1} value={80} type="number" id="numberInput" />
                         </form>
                     </div>
