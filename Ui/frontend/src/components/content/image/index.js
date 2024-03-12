@@ -24,7 +24,6 @@ export default function Image(props) {
             alt='preview'
             className='w-full'
             src={file.preview}
-            // Revoke data uri after image is loaded
             onLoad={() => { URL.revokeObjectURL(file.preview) }}
         />
         </div>
@@ -32,9 +31,8 @@ export default function Image(props) {
     ));
 
     useEffect(() => {
-    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
     return () => files.forEach(file => URL.revokeObjectURL(file.preview));
-    }, []);
+    });
 
     return (
         <div>
@@ -55,11 +53,11 @@ export default function Image(props) {
                     <div>
                     <form className='text-left'>
                             <label htmlFor="numberInput">{t('max_labels')}</label>
-                            <input className='ml-8 w-24 bg-slate-100' placeholder='Number' min={1} value={5} type="number" id="numberInput" />
+                            <input className='ml-8 w-24 bg-slate-100' min={1} placeholder={5} type="number" id="numberInput" />
                             <br></br>
                             <br></br>
                             <label className='' htmlFor="numberInput">{t('min_confidence')}</label>
-                            <input className='ml-8 w-24 bg-slate-100' placeholder='Number' max={100} min={1} value={80} type="number" id="numberInput" />
+                            <input className='ml-8 w-24 bg-slate-100' max={100} min={1} placeholder={80} type="number" id="numberInput" />
                         </form>
                     </div>
                 </div>

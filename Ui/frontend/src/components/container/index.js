@@ -1,14 +1,34 @@
+import React, { useState } from 'react'; // Import useState
 import Label from "../content/label";
 import Image from "../content/image";
 import { useTranslation } from 'react-i18next';
-import i18n from '../../translations/i18n'; 
+import i18n from '../../translations/i18n';
 
 export default function Container({ children }) {
     const { t } = useTranslation();
+    const [data, setData] = useState(''); // State to store fetched data
 
     const changeLanguage = (language) => {
         i18n.changeLanguage(language);
     };
+
+    // Adjusted fetchData to update state
+    const fetchData = async (url) => {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            setData(JSON.stringify(data)); // Update state with fetched data
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            setData('Error fetching data'); // Update state in case of error
+        }
+    };
+
+    // Handler for the Start button click
+    const handleStartClick = () => {
+        fetchData('http://localhost:5170/api/test');
+    };
+
 
     return (
         <div className="w-full flex items-center justify-center">
@@ -25,11 +45,13 @@ export default function Container({ children }) {
                 <div className="w-full flex justify-center">
                     <div className="separator w-[75%] bg-black h-1"></div>
                 </div>
-                
+
                 <Label />
                 <div className="w-full flex justify-center mt-10">
                     <div className="h-12 text-center justify-center w-[75%] rounded-xl bg-lime-500">
-                        <p className="p-3 text-xl">Start</p>
+                        {/* Updated to use handleStartClick */}
+                        <button onClick={handleStartClick} className="p-3 text-xl">Start</button>
+                        <p>{data}</p>
                     </div>
                 </div>
             </div>
