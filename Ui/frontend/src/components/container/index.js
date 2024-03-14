@@ -12,21 +12,24 @@ export default function Container({ children }) {
         i18n.changeLanguage(language);
     };
 
-    // Adjusted fetchData to update state
+
     const fetchData = async (url) => {
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            setData(JSON.stringify(data)); // Update state with fetched data
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            setData('Error fetching data'); // Update state in case of error
-        }
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                setData(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setData(null); // or set to an appropriate error state
+            });
     };
+
 
     // Handler for the Start button click
     const handleStartClick = () => {
-        fetchData('http://localhost:5170/api/test');
+        fetchData('/analyze');
     };
 
 
@@ -46,12 +49,11 @@ export default function Container({ children }) {
                     <div className="separator w-[75%] bg-black h-1"></div>
                 </div>
 
-                <Label />
+                <Label response={data} />
                 <div className="w-full flex justify-center mt-10">
                     <div className="h-12 text-center justify-center w-[75%] rounded-xl bg-lime-500">
-                        {/* Updated to use handleStartClick */}
                         <button onClick={handleStartClick} className="p-3 text-xl">Start</button>
-                        <p>{data}</p>
+                        <p></p>
                     </div>
                 </div>
             </div>

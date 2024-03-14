@@ -1,29 +1,35 @@
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function Image() {
+export default function Label({ response }) {
     const { t } = useTranslation();
 
+    // Ensure response is in the expected format and is not undefined
+    const isValidResponse = Array.isArray(response);
+
     return (
-        <div className="w-full  flex justify-center mt-10">
+        <div className="w-full flex justify-center mt-10">
             <div className="text-left p-3 w-[75%]">
                 <h1 className="mb-4">{t('labels')}</h1>
-                <div className="flex">
-                    <div className="flex-1">
-                        <p>Cat</p>
-                        <p>Color</p>
-                        <p>Animal</p>
-                        <p>Car</p>
-                        <p>House</p>
-                    </div>
-                    <div className="flex-1">
-                        <p>89,543345</p>
-                        <p>87,342562</p>
-                        <p>78,323423</p>
-                        <p>60,234823</p>
-                        <p>60,134234</p>
-                    </div>
+                <div className="flex bg-slate-500">
+                    <table className='text-center table-auto w-full bg-red-200' id='table'>
+                        <thead>
+                            <tr>
+                                <th>{t('labels')}</th>
+                                <th>{t('confidence')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {isValidResponse && response.map((label, index) => (
+                                <tr key={index}>
+                                    <td>{label.name}</td>
+                                    <td>{label.confidence}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     );
-    }
+}
