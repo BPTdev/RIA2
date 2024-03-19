@@ -38,9 +38,9 @@ export default function Container({ children }) {
             <div className="w-[40%] h-screen">
                 <div className="w-full mt-4 flex justify-end">
                     <div className=" flex w-24 gap-1 right-0">
-                        <button onClick={() => changeLanguage('en')}><span>EN</span></button>
-                        <button onClick={() => changeLanguage('fr')}><span>FR</span></button>
-                        <button onClick={() => changeLanguage('de')}><span>DE</span></button>
+                        <button id='lang-en' onClick={() => changeLanguage('en')}><span>EN</span></button>
+                        <button id='lang-fr' onClick={() => changeLanguage('fr')}><span>FR</span></button>
+                        <button id='lang-de' onClick={() => changeLanguage('de')}><span>DE</span></button>
                     </div>
                 </div>
                 <h1 className="text-4xl mt-12" id="title">{t('title')}</h1>
