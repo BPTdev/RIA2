@@ -21,6 +21,7 @@ export default function Image(props) {
     <div className='w-full mt-4' key={file.name}>
         <div>
         <img
+        id='preview-image'
             alt='preview'
             className='w-full'
             src={file.preview}
@@ -38,7 +39,7 @@ export default function Image(props) {
         <div>
             <div className='w-full flex justify-center'>
                     <section className="w-[75%] flex-initial p-4 bg-slate-100 text-slate-400 rounded-lg border my-10">
-                        <div {...getRootProps({ className: 'dropzone' })}>
+                        <div  {...getRootProps({ className: 'dropzone' })}>
                             <input {...getInputProps()} />
                             <p>{t('dragndroptext')}</p>
                             
