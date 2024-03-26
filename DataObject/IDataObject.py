@@ -11,7 +11,7 @@ class IDataObject(ABC):
         pass
 
     @abstractmethod
-    def download(self, remote_full_path: str, local_file_path: str) -> bytearray:
+    def download(self, remote_full_path: str, file: bytearray) -> any:
         pass
 
     @abstractmethod

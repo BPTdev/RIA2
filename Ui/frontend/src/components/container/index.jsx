@@ -32,6 +32,10 @@ export default function Container({ children }) {
         fetchData('/analyze');
     };
 
+    const handleDeleteLabels = () => {
+        setData('');
+    }
+
 
     return (
         <div className="w-full flex items-center justify-center">
@@ -51,9 +55,12 @@ export default function Container({ children }) {
 
                 <Label response={data} />
                 <div className="w-full flex justify-center mt-10">
-                    <div className="h-12 text-center justify-center w-[75%] rounded-xl bg-lime-500">
-                        <button onClick={handleStartClick} className="p-3 text-xl">Start</button>
-                        <p></p>
+                    <div className="cursor-pointer h-12 text-center justify-center w-[75%] rounded-xl bg-lime-500">
+                        <div onClick={handleStartClick} className="p-3 text-xl">Start</div>
+                        <div className='flex'>
+                            <div className='flex-1'></div>
+                            <div className='mt-2 cursor-pointer rounded-md bg-gray-100 py-2 w-2/4 border' onClick={handleDeleteLabels}><p>{t('delete_labels')}</p></div>
+                        </div>
                     </div>
                 </div>
             </div>
