@@ -4,5 +4,6 @@
     "confidence": "Confiance",
     "labels": "Étiquettes",
     "max_labels": "Nombre max d'étiquettes",
-    "min_confidence": "Confiance min"
+    "min_confidence": "Confiance min",
+    "delete_labels":"Supprimer les étiquettes"
 }

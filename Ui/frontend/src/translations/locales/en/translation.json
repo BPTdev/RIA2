@@ -4,5 +4,6 @@
     "confidence": "Confidence",
     "labels": "Labels",
     "max_labels": "Max labels number",
-    "min_confidence": "Min confidence"
+    "min_confidence": "Min confidence",
+    "delete_labels":"Delete labels"
 }

@@ -4,5 +4,6 @@
     "confidence": "Vertrauen",
     "labels": "Labels",
     "max_labels": "Maximale Anzahl an Labels",
-    "min_confidence": "Mindestvertrauen"
+    "min_confidence": "Mindestvertrauen",
+    "delete_labels":"Lösche alle Labels"
 }
