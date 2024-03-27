@@ -7,33 +7,44 @@ import i18n from '../../translations/i18n';
 export default function Container({ children }) {
     const { t } = useTranslation();
     const [data, setData] = useState(''); // State to store fetched data
+    const [selectedImage, setSelectedImage] = useState(null); // State to store the selected image
+
 
     const changeLanguage = (language) => {
         i18n.changeLanguage(language);
     };
-
-
-    const fetchData = async (url) => {
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                setData(data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                setData(null); // or set to an appropriate error state
-            });
+    const sendDataToApi = (image) => {
+        const formData = new FormData();
+        formData.append('image', image);
+        
+        fetch('http://localhost:5170/api/test', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            setData(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            setData('An error occurred');
+        });
     };
-
-
-    // Handler for the Start button click
     const handleStartClick = () => {
-        fetchData('/analyze');
+        if (selectedImage) {
+            sendDataToApi(selectedImage);
+        } else {
+            console.error('No image selected');
+            // Handle the case where no image is selected
+        }
     };
+
+    
 
     const handleDeleteLabels = () => {
         setData('');
+        setSelectedImage(null); // Clear the selected image
     }
 
     const testApi = () => {
@@ -57,24 +68,8 @@ export default function Container({ children }) {
     };
     
     const handleImageSelected = (image) => {
-        // Vous pouvez maintenant utiliser 'image' pour l'envoyer à votre API Gateway
+        setSelectedImage(image); // Save the selected image in the state
         console.log(image);
-        // Exemple d'envoi d'image à l'API (ajustez selon vos besoins)
-        const formData = new FormData();
-        formData.append('image', image);
-    
-        fetch('http://localhost:5170/api/test', {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            setData(data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
     };
     
 
