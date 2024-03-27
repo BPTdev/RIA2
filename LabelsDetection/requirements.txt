@@ -1,2 +1,9 @@
-Flask==2.0.2
-werkzeug==2.0.2
+Flask
+Werkzeug
+python-dotenv
+boto3
+python-magic
+libmagic
+requests
+flask-cors
+
