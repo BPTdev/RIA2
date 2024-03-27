@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\ConversionHelper;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -38,3 +40,9 @@ Route::get('/analyze', function (Request $request) {
 
     return response()->json($temp);
 });
+
+Route::get('/sequence', function (Request $request) {
+    
+    $data = ConversionHelper::convertToJsonForUi($jsonString);
+});
+

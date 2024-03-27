@@ -1,0 +1,14 @@
+version: '3'
+services:
+  frontend:
+    build: ./path/to/frontend
+    ports:
+      - "3000:5173"
+  api-gateway:
+    build: ./path/to/api-gateway
+    ports:
+      - "5000:5000"
+  backend:
+    build: ./path/to/backend
+    ports:
+      - "8000:8000"
