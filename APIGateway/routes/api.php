@@ -22,26 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-Route::get('/mock', function (Request $request) {
-    return response()->json(Storage::get('response.json'));
-});
-
-Route::get('/analyze', function (Request $request) {
-    $contents = Storage::get('response.json');
-    $mock = json_decode($contents, true);
-    $temp = [];
-
-    foreach ($mock['Labels'] as $label) {
-        $temp[] = [
-            'name' => $label['Name'],
-            'confidence' => $label['Confidence'],
-        ];
-    }
-
-    return response()->json($temp);
-});
-
 Route::post('/analyze', function (Request $request) {
     if ($request->hasFile('image') && $request->file('image')->isValid()) {
         $response = Http::attach(

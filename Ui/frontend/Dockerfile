@@ -1,23 +1,38 @@
-# Use an official Node runtime as a parent image
-FROM node:14
+# Build Stage
+FROM node:14 as build-stage
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy package.json and the package-lock.json (if available)
 COPY package*.json ./
 
-# Install any dependencies
 RUN npm install
 
-# Bundle app source inside the Docker image
 COPY . .
 
-# Build the app for production
 RUN npm run build
 
-# Install `serve` to run the application
-RUN npm install -g serve
+# Development Stage
+FROM node:14 as development-stage
 
-# Command to run the app
-CMD ["serve", "-s", "build", "-l", "3000"]
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "start"]
+
+# Production Stage
+FROM nginx:alpine as production-stage
+
+COPY --from=build-stage /app/build /usr/share/nginx/html
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY default.conf /etc/nginx/conf.d/
+
+EXPOSE 3000
+
+CMD ["nginx", "-g", "daemon off;"]
