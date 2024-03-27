@@ -21,7 +21,7 @@ def analyze_image():
                 'min_confidence': request.form.get('min_confidence')
             }
             # Make the HTTP POST request
-            response = requests.post('http://localhost:5171/api/analyze', files=files, data=data)
+            response = requests.post('http://localhost:5171/analyze', files=files, data=data)
             return jsonify(response.json())
         else:
             return jsonify({'error': 'No valid image provided'}), 400
