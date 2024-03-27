@@ -22,8 +22,8 @@ export default function Label({ response }) {
                         <tbody>
                             {isValidResponse && response.map((label, index) => (
                                 <tr key={index}>
-                                    <td>{label.name}</td>
-                                    <td>{label.confidence}</td>
+                                    <td>{label.Name}</td>
+                                    <td>{label.Confidence}</td>
                                 </tr>
                             ))}
                         </tbody>

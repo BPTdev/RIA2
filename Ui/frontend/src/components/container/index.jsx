@@ -70,6 +70,7 @@ export default function Container({ children }) {
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
+            setData(data);
         })
         .catch((error) => {
             console.error('Error:', error);
