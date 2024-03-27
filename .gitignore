@@ -4,3 +4,4 @@ __pycache__/
 .env
 *.sql
 docker-compose.yml
+.vscode/
