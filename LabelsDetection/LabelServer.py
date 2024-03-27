@@ -13,7 +13,7 @@ awsData = AwsDataObjectImpl()
 awsLabel = AwsLabelDetectorImpl()
 
 # Définir le dossier de téléchargement temporaire pour les fichiers uploadés
-UPLOAD_FOLDER = 'temp_images'
+UPLOAD_FOLDER = 'tmp'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Définir les extensions de fichiers autorisées pour les images
@@ -46,8 +46,8 @@ def analyze():
 
         # Traiter l'image
         bucket = 'python.cloud.aws.edu'
-        remote_full_path = f'{bucket}/{filename}'
-        remote_full_path = awsData.api_call(bucket, filename, remote_full_path)
+        remote_full_path = f'{bucket}/{file_path}'
+        remote_full_path = awsData.api_call(bucket, file_path, remote_full_path)
         tempUri = awsData.publish(remote_full_path)
         response = awsLabel.analyze(tempUri)
         current_date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
@@ -63,7 +63,7 @@ def analyze():
         # Supprimer le fichier temporaire après traitement
         os.remove(file_path)
 
-        return jsonify({"message": "Image processed successfully."})
+        return response['Labels']
 
     return jsonify({"error": "Invalid file format"}), 400
 
