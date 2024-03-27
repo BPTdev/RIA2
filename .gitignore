@@ -3,4 +3,5 @@ ImgToLabels/keys.json
 __pycache__/
 .env
 *.sql
+docker-compose.yml
 .vscode/
