@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use App\Helpers\ConversionHelper;
+use Illuminate\Support\Facades\Http;
 
 
 /*
@@ -41,8 +41,12 @@ Route::get('/analyze', function (Request $request) {
     return response()->json($temp);
 });
 
-Route::get('/sequence', function (Request $request) {
+Route::get('/test', function (Request $request) {
+    $response = Http::post('http://localhost:5171' . '/analyze', [
+        'image' => $request->image,
+    ]);
     
-    $data = ConversionHelper::convertToJsonForUi($jsonString);
+    return response()->json($response->json());
 });
+
 

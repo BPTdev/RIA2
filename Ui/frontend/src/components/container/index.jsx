@@ -36,6 +36,48 @@ export default function Container({ children }) {
         setData('');
     }
 
+    const testApi = () => {
+        fetch('http://localhost:5170/api/test')
+            .then(response => {
+                // Vérifiez si la réponse est OK
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Récupérer le texte de la réponse
+                return response.text();
+            })
+            .then(data => {
+                // Log du texte de la réponse
+                console.log(data);
+            })
+            .catch(error => {
+                // Log de l'erreur
+                console.error('Error:', error);
+            });
+    };
+    
+    const handleImageSelected = (image) => {
+        // Vous pouvez maintenant utiliser 'image' pour l'envoyer à votre API Gateway
+        console.log(image);
+        // Exemple d'envoi d'image à l'API (ajustez selon vos besoins)
+        const formData = new FormData();
+        formData.append('file', image);
+    
+        fetch('http://localhost:5170/api/test', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    };
+    
+
+
 
     return (
         <div className="w-full flex items-center justify-center">
@@ -48,7 +90,7 @@ export default function Container({ children }) {
                     </div>
                 </div>
                 <h1 className="text-4xl mt-12" id="title">{t('title')}</h1>
-                <Image />
+                <Image onImageSelected={handleImageSelected} />
                 <div className="w-full flex justify-center">
                     <div className="separator w-[75%] bg-black h-1"></div>
                 </div>
@@ -62,6 +104,9 @@ export default function Container({ children }) {
                             <div className='mt-2 cursor-pointer rounded-md bg-gray-100 py-2 w-2/4 border' onClick={handleDeleteLabels}><p>{t('delete_labels')}</p></div>
                         </div>
                     </div>
+                </div>
+                <div>
+                    <div className='bg-pink-300' onClick={testApi}>Test api</div>
                 </div>
             </div>
         </div>
