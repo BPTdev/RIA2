@@ -6,6 +6,8 @@ import i18n from '../../translations/i18n';
 
 export default function Container({ children }) {
     const { t } = useTranslation();
+    const [maxLabels, setMaxLabels] = useState(5);
+    const [minConfidence, setMinConfidence] = useState(80);
     const [data, setData] = useState(''); // State to store fetched data
     const [selectedImage, setSelectedImage] = useState(null); // State to store the selected image
 
@@ -13,65 +15,46 @@ export default function Container({ children }) {
     const changeLanguage = (language) => {
         i18n.changeLanguage(language);
     };
-    const sendDataToApi = (image) => {
-        const formData = new FormData();
-        formData.append('image', image);
-        
-        fetch('http://localhost:5170/api/test', {
+    const sendDataToApi = (formData) => {
+        fetch('http://localhost:5170/api/analyze', {
             method: 'POST',
             body: formData,
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            setData(data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            setData('An error occurred');
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                setData(data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                setData('An error occurred');
+            });
     };
     const handleStartClick = () => {
         if (selectedImage) {
-            sendDataToApi(selectedImage);
+            const formData = new FormData();
+            formData.append('image', selectedImage);
+            formData.append('max_labels', maxLabels);
+            formData.append('min_confidence', minConfidence);
+            sendDataToApi(formData);
         } else {
             console.error('No image selected');
-            // Handle the case where no image is selected
+            alert('No image selected, please select an image first.')
         }
     };
 
-    
+
 
     const handleDeleteLabels = () => {
         setData('');
         setSelectedImage(null); // Clear the selected image
     }
 
-    const testApi = () => {
-        fetch('http://localhost:5170/api/test')
-            .then(response => {
-                // Vérifiez si la réponse est OK
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                // Récupérer le texte de la réponse
-                return response.text();
-            })
-            .then(data => {
-                // Log du texte de la réponse
-                console.log(data);
-            })
-            .catch(error => {
-                // Log de l'erreur
-                console.error('Error:', error);
-            });
-    };
-    
     const handleImageSelected = (image) => {
         setSelectedImage(image); // Save the selected image in the state
         console.log(image);
     };
-    
+
 
 
 
@@ -86,7 +69,7 @@ export default function Container({ children }) {
                     </div>
                 </div>
                 <h1 className="text-4xl mt-12" id="title">{t('title')}</h1>
-                <Image onImageSelected={handleImageSelected} />
+                <Image onImageSelected={handleImageSelected} setMaxLabels={setMaxLabels} setMinConfidence={setMinConfidence} />
                 <div className="w-full flex justify-center">
                     <div className="separator w-[75%] bg-black h-1"></div>
                 </div>
@@ -100,9 +83,6 @@ export default function Container({ children }) {
                             <div className='mt-2 cursor-pointer rounded-md bg-gray-100 py-2 w-2/4 border' onClick={handleDeleteLabels}><p>{t('delete_labels')}</p></div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <div className='bg-pink-300' onClick={testApi}>Test api</div>
                 </div>
             </div>
         </div>

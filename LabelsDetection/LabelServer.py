@@ -44,12 +44,16 @@ def analyze():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
 
+        # Save the labels params : 
+        max_labels = request.form.get('max_labels', type=int)  # Provide default value if not found
+        min_confidence = request.form.get('min_confidence', type=float)  # Provide default value if not found
+
         # Traiter l'image
         bucket = 'python.cloud.aws.edu'
         remote_full_path = f'{bucket}/{file_path}'
         remote_full_path = awsData.api_call(bucket, file_path, remote_full_path)
         tempUri = awsData.publish(remote_full_path)
-        response = awsLabel.analyze(tempUri)
+        response = awsLabel.analyze(tempUri, max_labels, min_confidence)
         current_date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         sql_file_name = f"sql/{filename}_{current_date}.sql"
         with open(sql_file_name, 'w') as sql_file:

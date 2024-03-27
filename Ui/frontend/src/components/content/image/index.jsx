@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 
-export default function Image({ onImageSelected }) { // Modification ici
+export default function Image({ onImageSelected, setMaxLabels, setMinConfidence }) {
     const { t } = useTranslation();
     const [files, setFiles] = useState([]);
     const { getRootProps, getInputProps } = useDropzone({
@@ -58,11 +58,11 @@ export default function Image({ onImageSelected }) { // Modification ici
                     <div>
                         <form className='text-left'>
                             <label htmlFor="numberInput">{t('max_labels')}</label>
-                            <input className='ml-8 w-24 bg-slate-100' min={1} placeholder={5} type="number" id="numberInput" />
+                            <input className='ml-8 w-24 bg-slate-100' min={1} placeholder={5} type="number" id="numberInput" onChange={(e) => setMaxLabels(e.target.value)} />
                             <br></br>
                             <br></br>
                             <label htmlFor="numberInput">{t('min_confidence')}</label>
-                            <input className='ml-8 w-24 bg-slate-100' max={100} min={1} placeholder={80} type="number" id="numberInput" />
+                            <input className='ml-8 w-24 bg-slate-100' max={100} min={1} placeholder={80} type="number" id="numberInput" onChange={(e) => setMinConfidence(e.target.value)} />
                         </form>
                     </div>
                 </div>
