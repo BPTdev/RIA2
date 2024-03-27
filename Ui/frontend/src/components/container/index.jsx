@@ -61,7 +61,7 @@ export default function Container({ children }) {
         console.log(image);
         // Exemple d'envoi d'image à l'API (ajustez selon vos besoins)
         const formData = new FormData();
-        formData.append('file', image);
+        formData.append('image', image);
     
         fetch('http://localhost:5170/api/test', {
             method: 'POST',

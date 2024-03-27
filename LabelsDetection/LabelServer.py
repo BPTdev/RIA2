@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
@@ -6,6 +7,8 @@ from DataObject.AwsDataObjectImpl import AwsDataObjectImpl
 from LabelDetector.AwsLabelDetectorImpl import AwsLabelDetectorImpl
 
 app = Flask(__name__)
+CORS(app)
+
 awsData = AwsDataObjectImpl()
 awsLabel = AwsLabelDetectorImpl()
 
@@ -23,6 +26,7 @@ def allowed_file(filename):
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
+    print('Files in request:', request.files)
     # Vérifier si la requête contient un fichier
     if 'file' not in request.files:
         return jsonify({"error": "No file part in the request"}), 400

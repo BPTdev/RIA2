@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 
 /*
@@ -41,12 +42,16 @@ Route::get('/analyze', function (Request $request) {
     return response()->json($temp);
 });
 
-Route::get('/test', function (Request $request) {
-    $response = Http::post('http://localhost:5171' . '/analyze', [
-        'image' => $request->image,
-    ]);
+Route::post('/test', function (Request $request) {
     
-    return response()->json($response->json());
+    if ($request->hasFile('image') && $request->file('image')->isValid()) {
+        $response = Http::attach(
+            'file',
+            file_get_contents($request->image->path()),
+            $request->image->getClientOriginalName()
+        )->post('http://localhost:5171/analyze');
+        return response()->json($response->json());
+    } else {
+        return response()->json(['error' => 'No valid image provided'], 400);
+    }
 });
-
-
