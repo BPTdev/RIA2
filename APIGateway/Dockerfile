@@ -1,32 +1,34 @@
-FROM php:7.4-apache
+# Base Stage for shared environment setup
+FROM python:3.8-slim as base
 
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
-    curl \
-    unzip \
-    git
+# Set the working directory in the container
+WORKDIR /app
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Copy only the requirements file, to cache the dependencies installation
+COPY requirements.txt .
 
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install pdo pdo_mysql gd
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Copy your Flask application file
+COPY APIGatewayServer.py .
 
-WORKDIR /var/www/html
+# Development stage builds on top of the base stage
+FROM base as development
+# Set environment variable to indicate development environment
+ENV FLASK_ENV=development
+ENV FLASK_APP=APIGatewayServer.py
+# Expose port 5170 for the Flask development server
+EXPOSE 5170
+# Run the Flask development server
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5170"]
 
-RUN rm /var/www/html/index.html
-
-COPY . /var/www/html
-
-EXPOSE 80
-
-COPY ./docker-config/entrypoint.sh /usr/local/bin/docker-entrypoint
-RUN chmod +x /usr/local/bin/docker-entrypoint
-
-ENTRYPOINT ["docker-entrypoint"]
-
-CMD ["apache2-foreground"]
+# Production stage also builds on the base stage
+FROM base as production
+# Set environment variable to indicate production environment
+ENV FLASK_ENV=production
+ENV FLASK_APP=APIGatewayServer.py
+# Expose port 5170 for access to the Flask application
+EXPOSE 5170
+# Running Flask directly for simplicity as per request
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5170", "--without-threads"]

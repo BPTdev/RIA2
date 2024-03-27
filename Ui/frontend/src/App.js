@@ -1,10 +1,11 @@
 import Container from './components/container';
 import './output.css';
-import { createServer } from "miragejs";
+//import { createServer } from "miragejs"; // Un comment to use mock server
 
 
 
 function App() {
+  // Un comment to use mock server
   // createServer({
   //   routes() {
 
